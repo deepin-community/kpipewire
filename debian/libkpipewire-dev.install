@@ -1,0 +1,5 @@
+usr/include/
+usr/lib/*/cmake/
+usr/lib/*/libKPipeWire.so
+usr/lib/*/libKPipeWireDmaBuf.so
+usr/lib/*/libKPipeWireRecord.so
