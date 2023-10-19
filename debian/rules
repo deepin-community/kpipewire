@@ -1,4 +1,12 @@
 #!/usr/bin/make -f
 
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+libpkgs_gen_strict_local_shlibs = $(libpkgs_all_packages)
+include /usr/share/pkg-kde-tools/qt-kde-team/2/library-packages.mk
+
 %:
 	dh $@
+
+override_dh_gencontrol-arch: libpkgs_gen_strict_local_shlibs
+	dh_gencontrol -a

@@ -1,0 +1,8 @@
+libKPipeWireDmaBuf.so.5 libkpipewiredmabuf5 #MINVER#
+* Build-Depends-Package: libkpipewire-dev
+ _ZN13DmaBufHandler13downloadFrameER6QImageRK13PipeWireFrame@Base 5.26.90
+ _ZN13DmaBufHandler8setupEglEv@Base 5.26.90
+ _ZN13DmaBufHandlerC1Ev@Base 5.26.90
+ _ZN13DmaBufHandlerC2Ev@Base 5.26.90
+ _ZN13DmaBufHandlerD1Ev@Base 5.26.90
+ _ZN13DmaBufHandlerD2Ev@Base 5.26.90

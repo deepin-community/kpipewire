@@ -1,15 +1,85 @@
-Source: template-repository
-Section: unknown
+Source: kpipewire
+Section: libs
 Priority: optional
-Maintainer: Tsic404 <liuheng@deepin.org>
-Build-Depends: debhelper (>= 11)
-Standards-Version: 4.1.3
-Homepage: https://github.com/deepin-community/template-repository
-#Vcs-Browser: https://salsa.debian.org/debian/deepin-community-template-repository
-#Vcs-Git: https://salsa.debian.org/debian/deepin-community-template-repository.git
+Maintainer: Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
+Uploaders: Aurélien COUDERC <coucouf@debian.org>,
+           Patrick Franz <deltaone@debian.org>,
+Build-Depends: cmake (>= 3.16~),
+               debhelper-compat (= 13),
+               dh-sequence-kf5,
+               dh-sequence-pkgkde-symbolshelper,
+               extra-cmake-modules (>= 5.102.0~),
+               gettext,
+               libavcodec-dev,
+               libavformat-dev,
+               libavutil-dev,
+               libdrm-dev (>= 2.4.62~),
+               libegl-dev,
+               libegl1-mesa-dev,
+               libepoxy-dev (>= 1.3~),
+               libgbm-dev,
+               libkf5coreaddons-dev (>= 5.98.0~),
+               libkf5i18n-dev (>= 5.98.0~),
+               libkf5wayland-dev (>= 4:5.98.0~),
+               libpipewire-0.3-dev,
+               libqt5waylandclient5-dev,
+               libswscale-dev,
+               libwayland-dev,
+               pkg-config,
+               pkg-kde-tools,
+               plasma-wayland-protocols (>= 1.9.0~),
+               qtbase5-dev,
+               qtbase5-private-dev,
+               qtdeclarative5-dev,
+               qtwayland5-dev-tools,
+Standards-Version: 4.6.2
+Homepage: https://invent.kde.org/plasma/kpipewire
+Vcs-Browser: https://salsa.debian.org/qt-kde-team/kde/kpipewire
+Vcs-Git: https://salsa.debian.org/qt-kde-team/kde/kpipewire.git
+Rules-Requires-Root: no
 
-Package: template-repository
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Package: libkpipewire-dev
+Section: libdevel
+Architecture: linux-any
+Depends: libkpipewire5 (= ${binary:Version}),
+         libkpipewiredmabuf5 (= ${binary:Version}),
+         libkpipewirerecord5 (= ${binary:Version}),
+         libpipewire-0.3-dev,
+         qtbase5-dev,
+         ${misc:Depends},
+Description: KDE's Pipewire libraries - development files
+ Components for rendering and recording PipeWire streams using Qt.
+ .
+ This package contains the library development files.
+
+Package: libkpipewire5
+Architecture: linux-any
+Depends: ${misc:Depends}, ${shlibs:Depends},
+Description: KDE's Pipewire libraries - libkpipewire5 library
+ Components for rendering and recording PipeWire streams using Qt.
+ .
+ This package contains the kpipewire main library.
+
+Package: libkpipewiredmabuf5
+Architecture: linux-any
+Depends: ${misc:Depends}, ${shlibs:Depends},
+Description: KDE's Pipewire libraries - libkpipewiredmabuf5
+ Components for rendering and recording PipeWire streams using Qt.
+ .
+ This package contains the kpipewiredmabuf library.
+
+Package: libkpipewirerecord5
+Architecture: linux-any
+Depends: ${misc:Depends}, ${shlibs:Depends},
+Description: KDE's Pipewire libraries - libkpipewirerecord5
+ Components for rendering and recording PipeWire streams using Qt.
+ .
+ This package contains the kpipewirerecord library.
+
+Package: qml-module-org-kde-pipewire
+Architecture: linux-any
+Depends: ${misc:Depends}, ${shlibs:Depends},
+Description: KDE's Pipewire libraries - QML module
+ Components for rendering and recording PipeWire streams using Qt.
+ .
+ This package contains the QtQuick module.

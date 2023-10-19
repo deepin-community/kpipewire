@@ -1,5 +1,134 @@
-template-repository (1.0-1) unstable; urgency=medium
+kpipewire (5.27.8-1) unstable; urgency=medium
 
-  * Initial release
+  [ Patrick Franz ]
+  * New upstream release (5.27.8).
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Patrick Franz <deltaone@debian.org>  Wed, 13 Sep 2023 20:48:20 +0200
+
+kpipewire (5.27.7-1) unstable; urgency=medium
+
+  [ Pino Toscano ]
+  * Add the libpipewire-0.3-dev dependency in libkpipewire-dev, as the kpipewire
+    headers include pipewire headers.
+
+  [ Patrick Franz ]
+  * New upstream release (5.27.7).
+
+ -- Patrick Franz <deltaone@debian.org>  Thu, 03 Aug 2023 18:52:16 +0200
+
+kpipewire (5.27.5-3) unstable; urgency=medium
+
+  * Release to unstable.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sat, 27 May 2023 18:23:40 +0200
+
+kpipewire (5.27.5-2) experimental; urgency=medium
+
+  [ Patrick Franz ]
+  * Update symbols from buildlogs.
+
+ -- Patrick Franz <deltaone@debian.org>  Wed, 10 May 2023 07:43:09 +0200
+
+kpipewire (5.27.5-1) experimental; urgency=medium
+
+  [ Patrick Franz ]
+  * New upstream release (5.27.5).
+  * Update symbols from buildlogs.
+
+ -- Patrick Franz <deltaone@debian.org>  Tue, 09 May 2023 23:26:05 +0200
+
+kpipewire (5.27.3-1) experimental; urgency=medium
+
+  [ Patrick Franz ]
+  * New upstream release (5.27.3).
+  * Add myself to Uploaders.
+
+ -- Patrick Franz <deltaone@debian.org>  Wed, 22 Mar 2023 23:17:25 +0100
+
+kpipewire (5.27.2-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (5.27.1).
+  * New upstream release (5.27.2).
+  * Update symbols from build for 5.27.2.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 28 Feb 2023 18:45:16 +0100
+
+kpipewire (5.27.0-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (5.27.0).
+  * Update build-deps and deps with the info from cmake.
+  * Update symbols from build for 5.27.0.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sat, 18 Feb 2023 17:08:36 +0100
+
+kpipewire (5.26.90-2) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * Release to unstable.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Mon, 23 Jan 2023 21:50:52 +0100
+
+kpipewire (5.26.90-1) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (5.26.90).
+  * Bump Standards-Version to 4.6.2, no change required.
+  * Add new libkpipewiredmabuf5 library package.
+  * Update symbols from build for 5.26.90.
+  * Limit binary packages to linux-any architectures where PipeWire
+    exists.
+  * Replace libegl1-mesa-dev build dependency with libegl-dev.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sun, 22 Jan 2023 01:37:10 +0100
+
+kpipewire (5.26.5-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (5.26.5).
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sat, 07 Jan 2023 00:20:22 +0100
+
+kpipewire (5.26.4-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (5.26.4).
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 29 Nov 2022 15:59:28 +0100
+
+kpipewire (5.26.3-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (5.26.3).
+  * Update build-deps and deps with the info from cmake.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 08 Nov 2022 15:42:23 +0100
+
+kpipewire (5.26.2-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (5.26.2).
+  * Update build-deps and deps with the info from cmake.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sun, 06 Nov 2022 23:06:09 +0100
+
+kpipewire (5.26.0-2) unstable; urgency=medium
+
+  * Team upload.
+  * Modernize the building more:
+    - add the dh-sequence-pkgkde-symbolshelper build dependency to use the
+      pkgkde_symbolshelper automatically
+    - drop the manually specified pkgkde_symbolshelper addon for dh
+  * Tighten the inter-library dependencies.
+  * Add the configuration for the CI on salsa.
+  * Explicitly add the gettext, and pkg-config build dependencies.
+
+ -- Pino Toscano <pino@debian.org>  Fri, 04 Nov 2022 09:25:00 +0100
+
+kpipewire (5.26.0-1) unstable; urgency=medium
+
+  [ Rik Mills ]
+  * Initial release. (Closes: #1021573)
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 11 Oct 2022 00:39:13 +0200
