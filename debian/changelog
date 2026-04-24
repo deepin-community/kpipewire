@@ -1,3 +1,255 @@
+kpipewire (6.6.3-2) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * Release to unstable.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 07 Apr 2026 08:55:38 +0200
+
+kpipewire (6.6.3-1) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.6.1).
+  * Update build-deps and deps with the info from cmake.
+  * Bump Standards-Version to 4.7.3, no change required.
+  * Drop Priority: optional, not needed anymore since dpkg 1.22.13.
+  * Update symbols from build for 6.6.1.
+  * New upstream release (6.6.3).
+  * Use dh-sequence-plasma to inject common base version dependency into
+    binary packages.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Wed, 25 Mar 2026 23:56:45 +0100
+
+kpipewire (6.5.4-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.5.4).
+  * Update symbols from build for 6.5.4.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 09 Dec 2025 20:50:59 +0100
+
+kpipewire (6.5.3-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.5.3).
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 18 Nov 2025 19:23:11 +0100
+
+kpipewire (6.5.2-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * Migrate to debian/watch version 5 syntax.
+  * Add/update David Edmundson’s key in upstream keyring.
+  * New upstream release (6.5.2).
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 04 Nov 2025 21:22:58 +0100
+
+kpipewire (6.5.1-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.5.1).
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 28 Oct 2025 23:08:34 +0100
+
+kpipewire (6.5.0-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.5.0).
+  * Refresh copyright information.
+  * Release to unstable.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Thu, 16 Oct 2025 21:57:57 +0200
+
+kpipewire (6.4.91-1) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.4.91).
+  * Update build-deps and deps with the info from cmake.
+  * Drop backported commits now part of the upstream release.
+  * Update symbols from build for 6.4.91.
+  * Drop Rules-Requires-Root: no, not needed anymore since trixie.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sun, 05 Oct 2025 12:04:47 +0200
+
+kpipewire (6.3.6-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * Fix incorrect backport of commit 0ac4aa41 that broke desktop
+    sharing. (Closes: #1109233, thanks Antonio Russo for the detailed
+    analysis !)
+  * New upstream release (6.3.6).
+    - Fix build with Qt 6.10.
+  * Refresh patches.
+  * Backport upstream commit: [9fe7a568] Adjust timers from the correct
+    thread
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 15 Jul 2025 16:45:40 +0200
+
+kpipewire (6.3.5-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.3.5).
+  * Backport upstream commits:
+    - Fix major VP9 encoding performance issue in apps using kpipewire like
+    spectacle by actually passing the encoding options to FFmpeg. (kde#488896)
+    - Correctly handle asynchronous request and feedback of encoding status
+    changes.
+    - Improve encoding startup performance by only querying VAAPI when
+    actually necessary.
+  * Update symbols from build for 6.3.5.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Mon, 19 May 2025 00:58:37 +0200
+
+kpipewire (6.3.4-1) unstable; urgency=medium
+
+  [ Patrick Franz ]
+  * New upstream release (6.3.4).
+  * Bump Standards-Version to 4.7.2 (No changes needed).
+
+ -- Patrick Franz <deltaone@debian.org>  Thu, 03 Apr 2025 00:58:40 +0200
+
+kpipewire (6.3.2-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.3.1).
+  * New upstream release (6.3.2).
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Fri, 28 Feb 2025 00:51:21 +0100
+
+kpipewire (6.3.0-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.3.0).
+  * Update build-deps and deps with the info from cmake.
+  * Release to unstable.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Mon, 10 Feb 2025 14:55:52 +0100
+
+kpipewire (6.2.91-1) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.2.91).
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Thu, 23 Jan 2025 23:50:56 +0100
+
+kpipewire (6.2.90-1) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.2.90).
+  * Update build-deps and deps with the info from cmake.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sat, 11 Jan 2025 23:06:13 +0100
+
+kpipewire (6.2.5-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.2.5).
+  * Update build-deps and deps with the info from cmake.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sun, 05 Jan 2025 10:56:47 +0100
+
+kpipewire (6.2.4-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.2.4).
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 03 Dec 2024 16:21:59 +0100
+
+kpipewire (6.2.3-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.2.3).
+  * Release to unstable.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Mon, 25 Nov 2024 23:14:35 +0100
+
+kpipewire (6.2.1-2) experimental; urgency=medium
+
+  * Team upload.
+
+  [ Sandro Knauß ]
+  * Use dh_qmldeps to detect QML dependencies.
+  * Add qml6-module packages to -dev package for QML dependency detection.
+
+ -- Sandro Knauß <hefee@debian.org>  Mon, 25 Nov 2024 19:20:39 +0100
+
+kpipewire (6.2.1-1) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.2.1).
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 15 Oct 2024 17:45:45 +0200
+
+kpipewire (6.2.0-1) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.1.90).
+  * Update build-deps and deps with the info from cmake.
+  * New upstream release (6.2.0).
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sat, 05 Oct 2024 23:17:41 +0200
+
+kpipewire (6.1.5-1) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.1.5).
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Wed, 11 Sep 2024 23:27:36 +0200
+
+kpipewire (6.1.4-1) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.1.4).
+  * Update symbols from build for 6.1.4.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sun, 11 Aug 2024 23:58:17 +0200
+
+kpipewire (6.1.3-1) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (6.1.3).
+  * Update build-deps and deps with the info from cmake.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sun, 21 Jul 2024 23:46:10 +0200
+
+kpipewire (6.1.0-2) experimental; urgency=medium
+
+  * Team upload.
+  * Update the symbols files from the logs of buildds.
+
+ -- Pino Toscano <pino@debian.org>  Sat, 22 Jun 2024 06:57:59 +0200
+
+kpipewire (6.1.0-1) experimental; urgency=medium
+
+  [ Patrick Franz ]
+  * New upstream release (6.1.0).
+  * Create new packages.
+  * Update d/copyright.
+
+ -- Patrick Franz <deltaone@debian.org>  Thu, 20 Jun 2024 12:37:54 +0200
+
+kpipewire (5.27.11-1) unstable; urgency=medium
+
+  [ Patrick Franz ]
+  * Bump Standards-Version to 4.7.0 (No changes needed).
+  * New upstream release (5.27.11).
+  * Update build-deps and deps with the info from cmake.
+
+ -- Patrick Franz <deltaone@debian.org>  Sun, 19 May 2024 12:20:52 +0200
+
+kpipewire (5.27.10-1) unstable; urgency=medium
+
+  [ Patrick Franz ]
+  * New upstream release (5.27.10).
+
+ -- Patrick Franz <deltaone@debian.org>  Thu, 11 Jan 2024 23:21:22 +0100
+
+kpipewire (5.27.9-1) unstable; urgency=medium
+
+  [ Patrick Franz ]
+  * New upstream release (5.27.9).
+
+ -- Patrick Franz <deltaone@debian.org>  Fri, 27 Oct 2023 21:51:12 +0200
+
 kpipewire (5.27.8-1) unstable; urgency=medium
 
   [ Patrick Franz ]

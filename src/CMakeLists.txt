@@ -3,7 +3,7 @@ include(ECMQmlModule)
 include(ECMGenerateHeaders)
 include(ECMSetupVersion)
 
-add_definitions(-DTRANSLATION_DOMAIN=\"kpipewire5\")
+add_definitions(-DTRANSLATION_DOMAIN=\"kpipewire6\")
 
 add_library(KPipeWire)
 
@@ -11,20 +11,45 @@ ecm_qt_declare_logging_category(kpipewire_SRCS
                             HEADER logging.h
                             IDENTIFIER PIPEWIRE_LOGGING
                             CATEGORY_NAME kpipewire_logging
+                            DEFAULT_SEVERITY Warning
                             DESCRIPTION "PipeWire components for KDE"
+                            EXPORT KPipeWire)
+ecm_qt_declare_logging_category(kpipewire_SRCS
+                            HEADER logging_vaapi.h
+                            IDENTIFIER PIPEWIREVAAPI_LOGGING
+                            CATEGORY_NAME kpipewire_vaapi_logging
+                            DEFAULT_SEVERITY Warning
+                            DESCRIPTION "PipeWire components for KDE - VAAPI related messages"
                             EXPORT KPipeWire)
 ecm_qt_declare_logging_category(kpipewiredmabuf_SRCS
                             HEADER logging_dmabuf.h
                             IDENTIFIER PIPEWIREDMABUF_LOGGING
                             CATEGORY_NAME kpipewire_dmabuf_logging
+                            DEFAULT_SEVERITY Warning
                             DESCRIPTION "PipeWire and DMABuf components for KDE"
                             EXPORT KPipeWireDmaBuf)
 ecm_qt_declare_logging_category(kpipewirerecord_SRCS
                             HEADER logging_record.h
                             IDENTIFIER PIPEWIRERECORD_LOGGING
                             CATEGORY_NAME kpipewire_record_logging
+                            DEFAULT_SEVERITY Warning
                             DESCRIPTION "PipeWire and FFmpeg components for KDE"
                             EXPORT KPipeWireRecord)
+ecm_qt_declare_logging_category(kpipewirerecord_SRCS
+                            HEADER logging_frame_statistics.h
+                            IDENTIFIER PIPEWIRERECORDFRAMESTATS_LOGGING
+                            CATEGORY_NAME kpipewire_record_framestatistics
+                            DEFAULT_SEVERITY Warning
+                            DESCRIPTION "PipeWire and FFmpeg components for KDE - Frame processing statistics"
+                            EXPORT KPipeWireRecord)
+ecm_qt_declare_logging_category(kpipewirerecord_SRCS
+                            HEADER logging_libav.h
+                            IDENTIFIER PIPEWIRELIBAV_LOGGING
+                            CATEGORY_NAME kpipewire_libav_logging
+                            DEFAULT_SEVERITY Warning
+                            DESCRIPTION "PipeWire components for KDE - libav log output"
+                            DEFAULT_SEVERITY Info)
+
 ecm_qt_install_logging_categories(
     EXPORT KPipeWire
     FILE kpipewire.categories
@@ -43,24 +68,17 @@ target_sources(KPipeWire PRIVATE
     pipewiresourcestream.cpp
     glhelpers.cpp
     pwhelpers.cpp
+    vaapiutils.cpp
     ${kpipewire_SRCS}
 )
 
-target_link_libraries(KPipeWire PRIVATE Qt::Quick Qt::GuiPrivate KF5::I18n
-    KF5::CoreAddons PkgConfig::PipeWire epoxy::epoxy PkgConfig::GBM)
+# these are features pipewire use extensively and make it hard to look at compile logs
+target_compile_options(KPipeWire PUBLIC -Wno-zero-as-null-pointer-constant -Wno-missing-field-initializers -Wno-cast-align -Wno-pedantic)
 
-target_compile_definitions(KPipeWire INTERFACE -DKPW_WITH_SOURCESIZE=1)
+target_link_libraries(KPipeWire PRIVATE Qt::Quick Qt::GuiPrivate Qt::OpenGL KF6::I18n
+    KF6::CoreAddons PkgConfig::PipeWire epoxy::epoxy PkgConfig::GBM Libdrm::Libdrm PkgConfig::LIBVA PkgConfig::LIBVA-drm)
 
-if (QT_MAJOR_VERSION EQUAL "5")
-    target_link_libraries(KPipeWire PRIVATE Qt5::Gui_EGL)
-    if (${Qt5Gui_OPENGL_IMPLEMENTATION} STREQUAL "GLESv2")
-        target_link_libraries(KPipeWire PRIVATE Qt5::Gui_GLESv2)
-    else()
-        target_link_libraries(KPipeWire PRIVATE Qt5::Gui_GL)
-    endif()
-else()
-    target_link_libraries(KPipeWire PRIVATE EGL::EGL)
-endif()
+target_link_libraries(KPipeWire PRIVATE EGL::EGL)
 
 target_include_directories(KPipeWire PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
                                      PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" ${PipeWire_INCLUDE_DIRS}
@@ -116,18 +134,31 @@ install(FILES
   DESTINATION ${KDE_INSTALL_INCLUDEDIR}/KPipeWire COMPONENT Devel
 )
 
-add_library(KPipeWireRecord pipewirerecord.cpp ${kpipewirerecord_SRCS})
-target_link_libraries(KPipeWireRecord PUBLIC KPipeWire
-    PRIVATE Qt::Core Qt::Gui KF5::CoreAddons KPipeWireDmaBuf
-    PkgConfig::AVCodec PkgConfig::AVUtil PkgConfig::AVFormat PkgConfig::GBM PkgConfig::SWScale
-    epoxy::epoxy Libdrm::Libdrm Qt::GuiPrivate
+add_library(KPipeWireRecord ${kpipewirerecord_SRCS}
+                            pipewirebaseencodedstream.cpp
+                            pipewireencodedstream.cpp
+                            pipewirerecord.cpp
+                            pipewireproduce.cpp
+                            encoder.cpp
+                            gifencoder.cpp
+                            h264vaapiencoder.cpp
+                            libx264encoder.cpp
+                            libopenh264encoder.cpp
+                            libvpxencoder.cpp
+                            libvpxvp9encoder.cpp
+                            libwebpencoder.cpp
 )
-
-target_compile_definitions(KPipeWireRecord INTERFACE -DKPW_WITH_SUGGESTED=1)
+target_link_libraries(KPipeWireRecord PUBLIC KPipeWire Qt6::QmlIntegration
+    PRIVATE Qt::Core Qt::Gui KF6::CoreAddons KPipeWireDmaBuf
+    PkgConfig::AVCodec PkgConfig::AVUtil PkgConfig::AVFormat PkgConfig::AVFilter PkgConfig::GBM PkgConfig::SWScale
+    epoxy::epoxy Libdrm::Libdrm
+)
 
 ecm_generate_headers(KPipeWireRecord_HEADERS
   HEADER_NAMES
   PipeWireRecord
+  PipeWireEncodedStream
+  PipeWireBaseEncodedStream
   REQUIRED_HEADERS KPipeWireRecord_HEADERS
 )
 set_target_properties(KPipeWireRecord PROPERTIES
@@ -137,6 +168,7 @@ set_target_properties(KPipeWireRecord PROPERTIES
 
 install(FILES
   ${KPipeWireRecord_HEADERS}
+  ${CMAKE_CURRENT_BINARY_DIR}/kpipewire_version.h
   DESTINATION ${KDE_INSTALL_INCLUDEDIR}/KPipeWire COMPONENT Devel
 )
 
@@ -146,7 +178,7 @@ install(TARGETS KPipeWire KPipeWireRecord KPipeWireDmaBuf EXPORT KPipeWireTarget
 ecm_setup_version(PROJECT VARIABLE_PREFIX KPIPEWIRE
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kpipewire_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KPipeWireConfigVersion.cmake"
-                        SOVERSION 5)
+                        SOVERSION ${PROJECT_VERSION_MAJOR})
 
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KPipeWire")
 install(EXPORT KPipeWireTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE KPipeWireTargets.cmake NAMESPACE K::)
@@ -164,13 +196,10 @@ install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/KPipeWireConfig.cmake"
 #################
 # Declarative
 
-ecm_add_qml_module(KPipeWireDeclarative URI "org.kde.pipewire" VERSION 1.0)
-target_sources(KPipeWireDeclarative PRIVATE kpipewiredeclarativeplugin.cpp)
-target_link_libraries(KPipeWireDeclarative PRIVATE KPipeWire Qt::Quick)
-ecm_finalize_qml_module(KPipeWireDeclarative DESTINATION ${KDE_INSTALL_QMLDIR})
+ecm_add_qml_module(KPipeWire URI "org.kde.pipewire" VERSION 1.0 GENERATE_PLUGIN_SOURCE DEPENDENCIES QtQuick)
+ecm_finalize_qml_module(KPipeWire DESTINATION ${KDE_INSTALL_QMLDIR})
 
-ecm_add_qml_module(KPipeWireRecordDeclarative URI "org.kde.pipewire.record" VERSION 1.0)
-target_sources(KPipeWireRecordDeclarative PRIVATE kpipewirerecorddeclarativeplugin.cpp)
-target_link_libraries(KPipeWireRecordDeclarative PRIVATE KPipeWire KPipeWireRecord Qt::Quick)
-ecm_finalize_qml_module(KPipeWireRecordDeclarative DESTINATION ${KDE_INSTALL_QMLDIR})
+ecm_add_qml_module(KPipeWireRecord URI "org.kde.pipewire.record" VERSION 1.0 GENERATE_PLUGIN_SOURCE)
+ecm_finalize_qml_module(KPipeWireRecord DESTINATION ${KDE_INSTALL_QMLDIR})
 
+add_subdirectory(monitors)

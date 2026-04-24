@@ -7,10 +7,8 @@
 #include "screencasting.h"
 #include "logging.h"
 #include "qwayland-zkde-screencast-unstable-v1.h"
-#include <KWayland/Client/output.h>
-#include <KWayland/Client/plasmawindowmanagement.h>
-#include <KWayland/Client/registry.h>
 #include <QGuiApplication>
+#include <QPointer>
 #include <QRect>
 #include <QtWaylandClient/QWaylandClientExtensionTemplate>
 #include <qpa/qplatformnativeinterface.h>
@@ -75,12 +73,7 @@ public:
         : QWaylandClientExtensionTemplate<ScreencastingPrivate>(ZKDE_SCREENCAST_UNSTABLE_V1_STREAM_REGION_SINCE_VERSION)
         , q(q)
     {
-#if QTWAYLANDCLIENT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
         initialize();
-#else
-        // QWaylandClientExtensionTemplate invokes this with a QueuedConnection but we want it called immediately
-        QMetaObject::invokeMethod(this, "addRegistryListener", Qt::DirectConnection);
-#endif
 
         if (!isInitialized()) {
             qWarning() << "Remember requesting the interface on your desktop file: X-KDE-Wayland-Interfaces=zkde_screencast_unstable_v1";
@@ -106,28 +99,20 @@ Screencasting::~Screencasting() = default;
 
 ScreencastingStream *Screencasting::createOutputStream(const QString &outputName, Screencasting::CursorMode mode)
 {
-    wl_output *output = nullptr;
     for (auto screen : qGuiApp->screens()) {
         if (screen->name() == outputName) {
-            output = (wl_output *)QGuiApplication::platformNativeInterface()->nativeResourceForScreen("output", screen);
+            return createOutputStream(screen, mode);
         }
     }
-
-    if (!output) {
-        return nullptr;
-    }
-
-    auto stream = new ScreencastingStream(this);
-    stream->setObjectName(outputName);
-    stream->d->init(d->stream_output(output, mode));
-    return stream;
+    return nullptr;
 }
 
-ScreencastingStream *Screencasting::createOutputStream(Output *output, CursorMode mode)
+ScreencastingStream *Screencasting::createOutputStream(QScreen *screen, CursorMode mode)
 {
+    wl_output *output = (wl_output *)QGuiApplication::platformNativeInterface()->nativeResourceForScreen("output", screen);
     auto stream = new ScreencastingStream(this);
-    stream->setObjectName(output->model());
-    stream->d->init(d->stream_output(*output, mode));
+    stream->setObjectName(screen->name());
+    stream->d->init(d->stream_output(output, mode));
     return stream;
 }
 
@@ -137,13 +122,6 @@ ScreencastingStream *Screencasting::createRegionStream(const QRect &geometry, qr
     auto stream = new ScreencastingStream(this);
     stream->setObjectName(QStringLiteral("region-%1,%2 (%3x%4)").arg(geometry.x()).arg(geometry.y()).arg(geometry.width()).arg(geometry.height()));
     stream->d->init(d->stream_region(geometry.x(), geometry.y(), geometry.width(), geometry.height(), wl_fixed_from_double(scaling), mode));
-    return stream;
-}
-
-ScreencastingStream *Screencasting::createWindowStream(PlasmaWindow *window, CursorMode mode)
-{
-    auto stream = createWindowStream(QString::fromUtf8(window->uuid()), mode);
-    stream->setObjectName(window->appId());
     return stream;
 }
 
@@ -165,3 +143,5 @@ void Screencasting::destroy()
 {
     d.reset(nullptr);
 }
+
+#include "moc_screencasting.cpp"

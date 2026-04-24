@@ -9,6 +9,7 @@
 #include "glhelpers.h"
 #include "logging.h"
 #include "pipewiresourcestream.h"
+#include "pwhelpers.h"
 
 #include <QGuiApplication>
 #include <QOpenGLContext>
@@ -26,10 +27,6 @@
 #include <libdrm/drm_fourcc.h>
 #include <unistd.h>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QtPlatformHeaders/QEGLNativeContext>
-#endif
-
 static void pwInit()
 {
     pw_init(nullptr, nullptr);
@@ -42,11 +39,13 @@ public:
     uint m_nodeId = 0;
     std::optional<uint> m_fd;
     std::function<QSGTexture *()> m_createNextTexture;
-    QScopedPointer<PipeWireSourceStream> m_stream;
-    QScopedPointer<QOpenGLTexture> m_texture;
+    std::unique_ptr<PipeWireSourceStream> m_stream;
+    std::unique_ptr<QOpenGLTexture> m_texture;
 
     EGLImage m_image = nullptr;
     bool m_needsRecreateTexture = false;
+    bool m_allowDmaBuf = true;
+    bool m_ready = false;
 
     struct {
         QImage texture;
@@ -55,6 +54,7 @@ public:
         bool dirty = false;
     } m_cursor;
     std::optional<QRegion> m_damage;
+    QRectF m_paintedRect;
 };
 
 class DiscardEglPixmapRunnable : public QRunnable
@@ -85,12 +85,9 @@ PipeWireSourceItem::PipeWireSourceItem(QQuickItem *parent)
     , d(new PipeWireSourceItemPrivate)
 {
     setFlag(ItemHasContents, true);
-
-    connect(this, &QQuickItem::visibleChanged, this, [this]() {
-        setEnabled(isVisible());
-        if (d->m_stream)
-            d->m_stream->setActive(isVisible());
-    });
+    connect(this, &PipeWireSourceItem::streamSizeChanged, this, &PipeWireSourceItem::updatePaintedRect);
+    connect(this, &PipeWireSourceItem::widthChanged, this, &PipeWireSourceItem::updatePaintedRect);
+    connect(this, &PipeWireSourceItem::heightChanged, this, &PipeWireSourceItem::updatePaintedRect);
 }
 
 PipeWireSourceItem::~PipeWireSourceItem()
@@ -104,9 +101,12 @@ void PipeWireSourceItem::itemChange(QQuickItem::ItemChange change, const QQuickI
 {
     switch (change) {
     case ItemVisibleHasChanged:
-        setEnabled(isVisible());
-        if (d->m_stream)
-            d->m_stream->setActive(isVisible() && data.boolValue && isComponentComplete());
+        if (!isVisible()) {
+            setReady(false);
+        }
+        if (d->m_stream) {
+            d->m_stream->setActive(isVisible());
+        }
         break;
     case ItemSceneChange:
         d->m_needsRecreateTexture = true;
@@ -121,10 +121,19 @@ void PipeWireSourceItem::itemChange(QQuickItem::ItemChange change, const QQuickI
 
 void PipeWireSourceItem::releaseResources()
 {
-    if (window()) {
-        window()->scheduleRenderJob(new DiscardEglPixmapRunnable(d->m_image, d->m_texture.take()), QQuickWindow::NoStage);
+    if (window() && (d->m_image || d->m_texture)) {
+        window()->scheduleRenderJob(new DiscardEglPixmapRunnable(d->m_image, d->m_texture.release()), QQuickWindow::NoStage);
         d->m_image = EGL_NO_IMAGE_KHR;
     }
+}
+
+void PipeWireSourceItem::invalidateSceneGraph()
+{
+    if (d->m_image != EGL_NO_IMAGE_KHR) {
+        eglDestroyImageKHR(eglGetCurrentDisplay(), d->m_image);
+        d->m_image = EGL_NO_IMAGE_KHR;
+    }
+    d->m_texture.reset();
 }
 
 void PipeWireSourceItem::setFd(uint fd)
@@ -146,7 +155,7 @@ void PipeWireSourceItem::resetFd()
         return;
     }
 
-    setEnabled(false);
+    setReady(false);
     close(*d->m_fd);
     d->m_fd.reset();
     d->m_stream.reset(nullptr);
@@ -158,13 +167,14 @@ void PipeWireSourceItem::resetFd()
 
 void PipeWireSourceItem::refresh()
 {
-    setEnabled(false);
+    setReady(false);
 
     if (!isComponentComplete()) {
         return;
     }
 
     if (d->m_nodeId == 0) {
+        releaseResources();
         d->m_stream.reset(nullptr);
         Q_EMIT streamSizeChanged();
 
@@ -173,19 +183,21 @@ void PipeWireSourceItem::refresh()
         };
     } else {
         d->m_stream.reset(new PipeWireSourceStream(this));
+        d->m_stream->setAllowDmaBuf(d->m_allowDmaBuf);
         Q_EMIT streamSizeChanged();
         connect(d->m_stream.get(), &PipeWireSourceStream::streamParametersChanged, this, &PipeWireSourceItem::streamSizeChanged);
+        connect(d->m_stream.get(), &PipeWireSourceStream::streamParametersChanged, this, &PipeWireSourceItem::usingDmaBufChanged);
 
-        d->m_stream->createStream(d->m_nodeId, d->m_fd.value_or(0));
-        if (!d->m_stream->error().isEmpty()) {
+        const bool created = d->m_stream->createStream(d->m_nodeId, d->m_fd.value_or(0));
+        if (!created || !d->m_stream->error().isEmpty()) {
             d->m_stream.reset(nullptr);
             d->m_nodeId = 0;
             return;
         }
-        d->m_stream->setActive(isVisible() && isComponentComplete());
+        d->m_stream->setActive(isVisible());
 
-        connect(d->m_stream.data(), &PipeWireSourceStream::frameReceived, this, &PipeWireSourceItem::processFrame);
-        connect(d->m_stream.data(), &PipeWireSourceStream::stateChanged, this, &PipeWireSourceItem::stateChanged);
+        connect(d->m_stream.get(), &PipeWireSourceStream::frameReceived, this, &PipeWireSourceItem::processFrame);
+        connect(d->m_stream.get(), &PipeWireSourceStream::stateChanged, this, &PipeWireSourceItem::stateChanged);
     }
     Q_EMIT stateChanged();
 }
@@ -265,22 +277,15 @@ QSGNode *PipeWireSourceItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePa
         return nullptr;
     }
 
-    QSGImageNode *screenNode;
-    auto pwNode = dynamic_cast<PipeWireRenderNode *>(node);
+    auto pwNode = static_cast<PipeWireRenderNode *>(node);
     if (!pwNode) {
-        delete node;
         pwNode = new PipeWireRenderNode;
-        screenNode = window()->createImageNode();
-        screenNode->setOwnsTexture(true);
-        pwNode->appendChildNode(screenNode);
-    } else {
-        screenNode = static_cast<QSGImageNode *>(pwNode->childAtIndex(0));
     }
-    screenNode->setTexture(texture);
 
-    const auto br = boundingRect().toRect();
-    QRect rect({0, 0}, texture->textureSize().scaled(br.size(), Qt::KeepAspectRatio));
-    rect.moveCenter(br.center());
+    QSGImageNode *screenNode = pwNode->screenNode(window());
+    screenNode->setTexture(texture);
+    screenNode->setOwnsTexture(true);
+    const auto rect = calculatePaintedRect(texture->textureSize());
     screenNode->setRect(rect);
 
     if (!d->m_cursor.position.has_value() || d->m_cursor.texture.isNull()) {
@@ -289,6 +294,7 @@ QSGNode *PipeWireSourceItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePa
         QSGImageNode *cursorNode = pwNode->cursorNode(window());
         if (d->m_cursor.dirty || !cursorNode->texture()) {
             cursorNode->setTexture(window()->createTextureFromImage(d->m_cursor.texture));
+            cursorNode->setOwnsTexture(true);
             d->m_cursor.dirty = false;
         }
         const qreal scale = qreal(rect.width()) / texture->textureSize().width();
@@ -308,6 +314,7 @@ QSGNode *PipeWireSourceItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePa
             p.drawRect(rect);
         }
         damageNode->setTexture(window()->createTextureFromImage(damageImage));
+        damageNode->setOwnsTexture(true);
         damageNode->setRect(rect);
         Q_ASSERT(damageNode->texture());
     }
@@ -337,8 +344,8 @@ void PipeWireSourceItem::processFrame(const PipeWireFrame &frame)
 
     if (frame.dmabuf) {
         updateTextureDmaBuf(*frame.dmabuf, frame.format);
-    } else if (frame.image) {
-        updateTextureImage(*frame.image);
+    } else if (frame.dataFrame) {
+        updateTextureImage(frame.dataFrame);
     }
 
     if (window() && window()->isVisible()) {
@@ -353,11 +360,7 @@ void PipeWireSourceItem::updateTextureDmaBuf(const DmaBufAttributes &attribs, sp
         return;
     }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    const auto openglContext = window()->openglContext();
-#else
     const auto openglContext = static_cast<QOpenGLContext *>(window()->rendererInterface()->getResource(window(), QSGRendererInterface::OpenGLContextResource));
-#endif
     if (!openglContext || !d->m_stream) {
         qCWarning(PIPEWIRE_LOGGING) << "need a window and a context" << window();
         return;
@@ -371,7 +374,12 @@ void PipeWireSourceItem::updateTextureDmaBuf(const DmaBufAttributes &attribs, sp
         const auto size = d->m_stream->size();
         d->m_image = GLHelpers::createImage(display, attribs, PipeWireSourceStream::spaVideoFormatToDrmFormat(format), size, nullptr);
         if (d->m_image == EGL_NO_IMAGE_KHR) {
-            d->m_stream->renegotiateModifierFailed(format, attribs.modifier);
+            QMetaObject::invokeMethod(
+                d->m_stream.get(),
+                [this, format, attribs]() {
+                    d->m_stream->renegotiateModifierFailed(format, attribs.modifier);
+                },
+                Qt::QueuedConnection);
             return nullptr;
         }
         if (!d->m_texture) {
@@ -393,26 +401,24 @@ void PipeWireSourceItem::updateTextureDmaBuf(const DmaBufAttributes &attribs, sp
         int textureId = d->m_texture->textureId();
         QQuickWindow::CreateTextureOption textureOption =
             format == SPA_VIDEO_FORMAT_ARGB || format == SPA_VIDEO_FORMAT_BGRA ? QQuickWindow::TextureHasAlphaChannel : QQuickWindow::TextureIsOpaque;
-        setEnabled(true);
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        return window()->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture, &textureId, 0 /*a vulkan thing?*/, size, textureOption);
-#else
         return QNativeInterface::QSGOpenGLTexture::fromNative(textureId, window(), size, textureOption);
-#endif
     };
+
+    setReady(true);
 }
 
-void PipeWireSourceItem::updateTextureImage(const QImage &image)
+void PipeWireSourceItem::updateTextureImage(const std::shared_ptr<PipeWireFrameData> &data)
 {
     if (!window()) {
         qCWarning(PIPEWIRE_LOGGING) << "pass";
         return;
     }
 
-    d->m_createNextTexture = [this, image] {
-        setEnabled(true);
-        return window()->createTextureFromImage(image, QQuickWindow::TextureIsOpaque);
+    d->m_createNextTexture = [this, data] {
+        return window()->createTextureFromImage(data->toImage(), QQuickWindow::TextureIsOpaque);
     };
+
+    setReady(true);
 }
 
 void PipeWireSourceItem::componentComplete()
@@ -461,3 +467,73 @@ QSize PipeWireSourceItem::streamSize() const
     }
     return d->m_stream->size();
 }
+
+bool PipeWireSourceItem::usingDmaBuf() const
+{
+    return d->m_stream && d->m_stream->usingDmaBuf();
+}
+
+bool PipeWireSourceItem::allowDmaBuf() const
+{
+    return d->m_stream && d->m_stream->allowDmaBuf();
+}
+
+void PipeWireSourceItem::setAllowDmaBuf(bool allowed)
+{
+    d->m_allowDmaBuf = allowed;
+    if (d->m_stream) {
+        d->m_stream->setAllowDmaBuf(allowed);
+    }
+}
+
+void PipeWireSourceItem::setReady(bool ready)
+{
+    if (d->m_ready != ready) {
+        d->m_ready = ready;
+        Q_EMIT readyChanged();
+    }
+}
+
+bool PipeWireSourceItem::isReady() const
+{
+    return d->m_ready;
+}
+
+void PipeWireSourceItem::setPaintedRect(const QRectF &rect)
+{
+    if (rect == d->m_paintedRect) {
+        return;
+    }
+
+    d->m_paintedRect = rect;
+    Q_EMIT paintedRectChanged();
+}
+
+QRectF PipeWireSourceItem::paintedRect() const
+{
+    return d->m_paintedRect;
+}
+
+QRect PipeWireSourceItem::calculatePaintedRect(const QSize &size) const
+{
+    if (size.isNull()) {
+        return {};
+    }
+
+    const auto bounding = boundingRect().toRect();
+    QRect rect({0, 0}, size.scaled(bounding.size(), Qt::KeepAspectRatio));
+    rect.moveCenter(bounding.center());
+    return rect;
+}
+
+void PipeWireSourceItem::updatePaintedRect()
+{
+    if (!d->m_stream) {
+        setPaintedRect(QRectF());
+        return;
+    }
+
+    setPaintedRect(calculatePaintedRect(d->m_stream->size()));
+}
+
+#include "moc_pipewiresourceitem.cpp"

@@ -1,84 +1,114 @@
 Source: kpipewire
 Section: libs
-Priority: optional
 Maintainer: Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
 Uploaders: Aurélien COUDERC <coucouf@debian.org>,
            Patrick Franz <deltaone@debian.org>,
-Build-Depends: cmake (>= 3.16~),
-               debhelper-compat (= 13),
-               dh-sequence-kf5,
+Build-Depends: debhelper-compat (= 13),
+               dh-sequence-kf6,
                dh-sequence-pkgkde-symbolshelper,
-               extra-cmake-modules (>= 5.102.0~),
+               dh-sequence-plasma,
+               dh-sequence-qmldeps,
+               cmake (>= 3.16~),
+               extra-cmake-modules (>= 6.22.0~),
                gettext,
                libavcodec-dev,
+               libavfilter-dev,
                libavformat-dev,
                libavutil-dev,
                libdrm-dev (>= 2.4.62~),
                libegl-dev,
-               libegl1-mesa-dev,
                libepoxy-dev (>= 1.3~),
                libgbm-dev,
-               libkf5coreaddons-dev (>= 5.98.0~),
-               libkf5i18n-dev (>= 5.98.0~),
-               libkf5wayland-dev (>= 4:5.98.0~),
+               libkf6coreaddons-dev (>= 6.2.0~),
+               libkf6i18n-dev (>= 6.2.0~),
                libpipewire-0.3-dev,
-               libqt5waylandclient5-dev,
                libswscale-dev,
+               libva-dev,
                libwayland-dev,
-               pkg-config,
-               pkg-kde-tools,
-               plasma-wayland-protocols (>= 1.9.0~),
-               qtbase5-dev,
-               qtbase5-private-dev,
-               qtdeclarative5-dev,
-               qtwayland5-dev-tools,
-Standards-Version: 4.6.2
+               libxkbcommon-dev,
+               pipewire-bin,
+               pkgconf,
+               plasma-wayland-protocols,
+               qt6-base-dev (>= 6.6.0+dfsg~),
+               qt6-base-private-dev (>= 6.6.0+dfsg~),
+               qt6-declarative-dev (>= 6.6.0+dfsg~),
+               qt6-declarative-private-dev (>= 6.6.0+dfsg~),
+               qt6-wayland-dev (>= 6.6.0~),
+Standards-Version: 4.7.3
 Homepage: https://invent.kde.org/plasma/kpipewire
 Vcs-Browser: https://salsa.debian.org/qt-kde-team/kde/kpipewire
 Vcs-Git: https://salsa.debian.org/qt-kde-team/kde/kpipewire.git
-Rules-Requires-Root: no
+
+Package: libkpipewire-data
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends},
+         ${plasma-version:Depends},
+Description: KDE's Pipewire libraries - data files
+ Components for rendering and recording PipeWire streams using Qt.
+ .
+ This package contains the library data files.
 
 Package: libkpipewire-dev
 Section: libdevel
 Architecture: linux-any
-Depends: libkpipewire5 (= ${binary:Version}),
-         libkpipewiredmabuf5 (= ${binary:Version}),
-         libkpipewirerecord5 (= ${binary:Version}),
+Multi-Arch: same
+Depends: libkpipewire6 (= ${binary:Version}),
+         libkpipewiredmabuf6 (= ${binary:Version}),
+         libkpipewirerecord6 (= ${binary:Version}),
          libpipewire-0.3-dev,
-         qtbase5-dev,
+         qml6-module-org-kde-pipewire (= ${binary:Version}),
+         qt6-base-dev (>= 6.6.0+dfsg~),
          ${misc:Depends},
+         ${plasma-version:Depends},
 Description: KDE's Pipewire libraries - development files
  Components for rendering and recording PipeWire streams using Qt.
  .
  This package contains the library development files.
 
-Package: libkpipewire5
+Package: libkpipewire6
 Architecture: linux-any
-Depends: ${misc:Depends}, ${shlibs:Depends},
-Description: KDE's Pipewire libraries - libkpipewire5 library
+Multi-Arch: same
+Depends: libkpipewire-data (= ${source:Version}),
+         ${misc:Depends},
+         ${plasma-version:Depends},
+         ${shlibs:Depends},
+Description: KDE's Pipewire libraries - libkpipewire6 library
  Components for rendering and recording PipeWire streams using Qt.
  .
  This package contains the kpipewire main library.
 
-Package: libkpipewiredmabuf5
+Package: libkpipewiredmabuf6
 Architecture: linux-any
-Depends: ${misc:Depends}, ${shlibs:Depends},
-Description: KDE's Pipewire libraries - libkpipewiredmabuf5
+Multi-Arch: same
+Depends: libkpipewire-data (= ${source:Version}),
+         ${misc:Depends},
+         ${plasma-version:Depends},
+         ${shlibs:Depends},
+Description: KDE's Pipewire libraries - libkpipewiredmabuf6
  Components for rendering and recording PipeWire streams using Qt.
  .
  This package contains the kpipewiredmabuf library.
 
-Package: libkpipewirerecord5
+Package: libkpipewirerecord6
 Architecture: linux-any
-Depends: ${misc:Depends}, ${shlibs:Depends},
-Description: KDE's Pipewire libraries - libkpipewirerecord5
+Multi-Arch: same
+Depends: libkpipewire-data (= ${source:Version}),
+         ${misc:Depends},
+         ${plasma-version:Depends},
+         ${shlibs:Depends},
+Description: KDE's Pipewire libraries - libkpipewirerecord6
  Components for rendering and recording PipeWire streams using Qt.
  .
  This package contains the kpipewirerecord library.
 
-Package: qml-module-org-kde-pipewire
+Package: qml6-module-org-kde-pipewire
 Architecture: linux-any
-Depends: ${misc:Depends}, ${shlibs:Depends},
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${plasma-version:Depends},
+         ${qml6:Depends},
+         ${shlibs:Depends},
 Description: KDE's Pipewire libraries - QML module
  Components for rendering and recording PipeWire streams using Qt.
  .

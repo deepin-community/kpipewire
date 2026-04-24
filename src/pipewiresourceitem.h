@@ -22,6 +22,7 @@
 struct DmaBufAttributes;
 class PipeWireSourceStream;
 struct PipeWireFrame;
+class PipeWireFrameData;
 class QSGTexture;
 class QOpenGLTexture;
 typedef void *EGLImage;
@@ -31,6 +32,7 @@ class PipeWireSourceItemPrivate;
 class KPIPEWIRE_EXPORT PipeWireSourceItem : public QQuickItem
 {
     Q_OBJECT
+    QML_ELEMENT
 
     /// Returns where the streams current state
     Q_PROPERTY(StreamState state READ state NOTIFY stateChanged)
@@ -47,9 +49,28 @@ class KPIPEWIRE_EXPORT PipeWireSourceItem : public QQuickItem
 
     /**
      * Returns the size of the source being rendered
-     * @note: This won't be updated until the first frame is recieved
+     * @note: This won't be updated until the first frame is received
      */
     Q_PROPERTY(QSize streamSize READ streamSize NOTIFY streamSizeChanged)
+
+    /**
+     * Allows disabling the dmabuf streams
+     */
+    Q_PROPERTY(bool allowDmaBuf READ allowDmaBuf WRITE setAllowDmaBuf)
+
+    Q_PROPERTY(bool usingDmaBuf READ usingDmaBuf NOTIFY usingDmaBufChanged)
+
+    /**
+     * Specifies whether the first frame has been received and there's something to display.
+     */
+    Q_PROPERTY(bool ready READ isReady NOTIFY readyChanged)
+
+    /**
+     * The painted rectangle of the item. Depending on the aspect ratio of the stream and the item only part of
+     * the item rectangle may actually be painted on.
+     */
+    Q_PROPERTY(QRectF paintedRect READ paintedRect NOTIFY paintedRectChanged)
+
 public:
     enum class StreamState { Error, Unconnected, Connecting, Paused, Streaming };
     Q_ENUM(StreamState);
@@ -69,23 +90,43 @@ public:
 
     QSize streamSize() const;
 
+    bool usingDmaBuf() const;
+    bool allowDmaBuf() const;
+    void setAllowDmaBuf(bool allowed);
+
+    bool isReady() const;
+
     void componentComplete() override;
     void releaseResources() override;
 
     StreamState state() const;
 
+    [[nodiscard]] QRectF paintedRect() const;
+
+public Q_SLOTS:
+    void invalidateSceneGraph(); // called via metaobject from QQuickWindow
+
 Q_SIGNALS:
     void nodeIdChanged(uint nodeId);
     void fdChanged(uint fd);
-    void stateChanged();
     void streamSizeChanged();
+    void stateChanged();
+    void usingDmaBufChanged();
+    void readyChanged();
+    void paintedRectChanged();
+
+private Q_SLOTS:
+    void updatePaintedRect();
 
 private:
     void itemChange(ItemChange change, const ItemChangeData &data) override;
     void processFrame(const PipeWireFrame &frame);
     void updateTextureDmaBuf(const DmaBufAttributes &attribs, spa_video_format format);
-    void updateTextureImage(const QImage &image);
+    void updateTextureImage(const std::shared_ptr<PipeWireFrameData> &data);
     void refresh();
+    void setReady(bool ready);
+    void setPaintedRect(const QRectF &rect);
+    [[nodiscard]] QRect calculatePaintedRect(const QSize &size) const;
 
     QScopedPointer<PipeWireSourceItemPrivate> d;
 };

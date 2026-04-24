@@ -1,0 +1,127 @@
+# SymbolsHelper-Confirmed: 6.6.1 amd64
+libKPipeWireRecord.so.6 libkpipewirerecord6 #MINVER#
+* Build-Depends-Package: libkpipewire-dev
+ _Z42qml_register_types_org_kde_pipewire_recordv@Base 6.4.91
+ _ZN14PipeWireRecord11makeProduceEv@Base 6.1.0
+ _ZN14PipeWireRecord11qt_metacallEN11QMetaObject4CallEiPPv@Base 6.1.0
+ _ZN14PipeWireRecord11qt_metacastEPKc@Base 6.1.0
+ _ZN14PipeWireRecord13outputChangedERK7QString@Base 6.1.0
+ _ZN14PipeWireRecord16staticMetaObjectE@Base 6.1.0
+ _ZN14PipeWireRecord9setOutputERK7QString@Base 6.1.0
+ _ZN14PipeWireRecordC1EP7QObject@Base 6.1.0
+ _ZN14PipeWireRecordC2EP7QObject@Base 6.1.0
+ _ZN14PipeWireRecordD0Ev@Base 6.1.0
+ _ZN14PipeWireRecordD1Ev@Base 6.1.0
+ _ZN14PipeWireRecordD2Ev@Base 6.1.0
+ _ZN21PipeWireEncodedStream11makeProduceEv@Base 6.1.0
+ _ZN21PipeWireEncodedStream11qt_metacallEN11QMetaObject4CallEiPPv@Base 6.1.0
+ _ZN21PipeWireEncodedStream11qt_metacastEPKc@Base 6.1.0
+ _ZN21PipeWireEncodedStream11sizeChangedERK5QSize@Base 6.1.0
+ _ZN21PipeWireEncodedStream13cursorChangedERK14PipeWireCursor@Base 6.1.0
+ _ZN21PipeWireEncodedStream16staticMetaObjectE@Base 6.1.0
+ _ZN21PipeWireEncodedStream6PacketC1EbRK10QByteArray@Base 6.1.0
+ _ZN21PipeWireEncodedStream6PacketC2EbRK10QByteArray@Base 6.1.0
+ _ZN21PipeWireEncodedStream9newPacketERKNS_6PacketE@Base 6.1.0
+ _ZN21PipeWireEncodedStreamC1EP7QObject@Base 6.1.0
+ _ZN21PipeWireEncodedStreamC2EP7QObject@Base 6.1.0
+ _ZN21PipeWireEncodedStreamD0Ev@Base 6.1.0
+ _ZN21PipeWireEncodedStreamD1Ev@Base 6.1.0
+ _ZN21PipeWireEncodedStreamD2Ev@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream10errorFoundERK7QString@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream10setEncoderENS_7EncoderE@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream10setQualityEh@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream11qt_metacallEN11QMetaObject4CallEiPPv@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream11qt_metacastEPKc@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream12stateChangedEv@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream13activeChangedEb@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream13nodeIdChangedEj@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream13setColorRangeENS_10ColorRangeE@Base 6.6.1
+ _ZN25PipeWireBaseEncodedStream14encoderChangedEv@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream15setMaxFramerateERK8Fraction@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream15setMaxFramerateEjj@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream16staticMetaObjectE@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream18encodingPreferenceEv@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream19maxFramerateChangedEv@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream19setMaxPendingFramesEi@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream21setEncodingPreferenceENS_18EncodingPreferenceE@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream23maxPendingFramesChangedEv@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream4stopEv@Base 6.3.5
+ _ZN25PipeWireBaseEncodedStream5setFdEj@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream5startEv@Base 6.3.5
+ _ZN25PipeWireBaseEncodedStream9fdChangedEj@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream9setActiveEb@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStream9setNodeIdEj@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStreamC1EP7QObject@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStreamC2EP7QObject@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStreamD0Ev@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStreamD1Ev@Base 6.1.0
+ _ZN25PipeWireBaseEncodedStreamD2Ev@Base 6.1.0
+ _ZNK14PipeWireRecord10metaObjectEv@Base 6.1.0
+ _ZNK14PipeWireRecord6outputEv@Base 6.1.0
+ _ZNK14PipeWireRecord9extensionEv@Base 6.1.0
+ _ZNK21PipeWireEncodedStream10metaObjectEv@Base 6.1.0
+ _ZNK21PipeWireEncodedStream6Packet10isKeyFrameEv@Base 6.1.0
+ _ZNK21PipeWireEncodedStream6Packet4dataEv@Base 6.1.0
+ _ZNK25PipeWireBaseEncodedStream10metaObjectEv@Base 6.1.0
+ _ZNK25PipeWireBaseEncodedStream12maxFramerateEv@Base 6.1.0
+ _ZNK25PipeWireBaseEncodedStream13maxBufferSizeEv@Base 6.1.0
+ _ZNK25PipeWireBaseEncodedStream17suggestedEncodersEv@Base 6.1.0
+ _ZNK25PipeWireBaseEncodedStream2fdEv@Base 6.1.0
+ _ZNK25PipeWireBaseEncodedStream5stateEv@Base 6.1.0
+ _ZNK25PipeWireBaseEncodedStream6nodeIdEv@Base 6.1.0
+ _ZNK25PipeWireBaseEncodedStream7encoderEv@Base 6.1.0
+ _ZNK25PipeWireBaseEncodedStream7qualityEv@Base 6.1.0
+ _ZNK25PipeWireBaseEncodedStream8isActiveEv@Base 6.1.0
+ (optional=templinst)_ZNSt8__detail18__to_chars_10_implIjEEvPcjT_@Base 6.6.1
+ (optional=templinst)_ZNSt8__detail18__to_chars_10_implIyEEvPcjT_@Base 6.6.1
+ _ZNSt8__detail31__from_chars_alnum_to_val_tableILb0EE5valueE@Base 6.6.1
+ (optional=templinst)_ZNSt8__format14__write_paddedINS_10_Sink_iterIcEEcEET_S3_St17basic_string_viewIT0_St11char_traitsIS5_EENS_6_AlignEmDi@Base 6.6.1
+ (optional=templinst)_ZNSt8__format15__write_escapedIcNS_10_Sink_iterIcEEEET0_S3_St17basic_string_viewIT_St11char_traitsIS5_EENS_10_Term_charE@Base 6.6.1
+ (optional=templinst)_ZNSt8__format18__write_escape_seqINS_10_Sink_iterIcEEcEET_S3_jSt17basic_string_viewIT0_St11char_traitsIS5_EE@Base 6.6.1
+ (optional=templinst)_ZNSt8__format20__write_escaped_charINS_10_Sink_iterIcEEcEET_S3_T0_@Base 6.6.1
+ (optional=templinst)_ZNSt8__format22__write_padded_as_specIcNS_10_Sink_iterIcEEEET0_St17basic_string_viewINSt13type_identityIT_E4typeESt11char_traitsIS8_EEmRSt20basic_format_contextIS3_S6_ERKNS_5_SpecIS6_EENS_6_AlignE@Base 6.6.1
+ (optional=templinst)_ZNSt8__format23__write_escaped_unicodeIcNS_10_Sink_iterIcEEEET0_S3_St17basic_string_viewIT_St11char_traitsIS5_EENS_10_Term_charE@Base 6.6.1
+ _ZNSt9__unicode9__v16_0_011__gcb_edgesE@Base 6.6.1
+ _ZNSt9__unicode9__v16_0_012__incb_edgesE@Base 6.6.1
+ _ZNSt9__unicode9__v16_0_013__width_edgesE@Base 6.6.1
+ _ZNSt9__unicode9__v16_0_014__escape_edgesE@Base 6.6.1
+ _ZNSt9__unicode9__v16_0_014__incb_linkersE@Base 6.6.1
+ _ZNSt9__unicode9__v16_0_014__xpicto_edgesE@Base 6.6.1
+ (optional=templinst)_ZSt14__add_groupingIcEPT_S1_S0_PKcmPKS0_S5_@Base 6.6.1
+ _ZTI14PipeWireRecord@Base 6.1.0
+ _ZTI21PipeWireEncodedStream@Base 6.1.0
+ _ZTI25PipeWireBaseEncodedStream@Base 6.1.0
+ (arch=armel riscv64)_ZTIN9__gnu_cxx7__mutexE@Base 6.1.0
+ _ZTINSt8__format14_Fixedbuf_sinkIcEE@Base 6.6.1
+ _ZTINSt8__format19_Formatting_scannerINS_10_Sink_iterIcEEcEE@Base 6.6.1
+ _ZTINSt8__format5_SinkIcEE@Base 6.6.1
+ _ZTINSt8__format8_ScannerIcEE@Base 6.6.1
+ _ZTINSt8__format9_Buf_sinkIcEE@Base 6.6.1
+ _ZTINSt8__format9_Seq_sinkINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEE@Base 6.6.1
+ (arch=armel riscv64)_ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 6.1.0
+ (arch=amd64 armhf)_ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 6.1.0
+ (arch=armel riscv64)_ZTISt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 6.1.0
+ (arch=amd64 armhf)_ZTISt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 6.1.0
+ (arch=armel armhf)_ZTISt19_Sp_make_shared_tag@Base 6.1.0
+ _ZTS14PipeWireRecord@Base 6.1.0
+ _ZTS21PipeWireEncodedStream@Base 6.1.0
+ _ZTS25PipeWireBaseEncodedStream@Base 6.1.0
+ (arch=armel riscv64)_ZTSN9__gnu_cxx7__mutexE@Base 6.1.0
+ _ZTSNSt8__format14_Fixedbuf_sinkIcEE@Base 6.6.1
+ _ZTSNSt8__format19_Formatting_scannerINS_10_Sink_iterIcEEcEE@Base 6.6.1
+ _ZTSNSt8__format5_SinkIcEE@Base 6.6.1
+ _ZTSNSt8__format8_ScannerIcEE@Base 6.6.1
+ _ZTSNSt8__format9_Buf_sinkIcEE@Base 6.6.1
+ _ZTSNSt8__format9_Seq_sinkINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEE@Base 6.6.1
+ (arch=armel riscv64)_ZTSSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 6.1.0
+ (arch=amd64 armhf)_ZTSSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 6.1.0
+ (arch=armel riscv64)_ZTSSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 6.1.0
+ (arch=amd64 armhf)_ZTSSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 6.1.0
+ _ZTSSt19_Sp_make_shared_tag@Base 6.1.0
+ _ZTV14PipeWireRecord@Base 6.1.0
+ _ZTV21PipeWireEncodedStream@Base 6.1.0
+ _ZTV25PipeWireBaseEncodedStream@Base 6.1.0
+ _ZTVNSt8__format14_Fixedbuf_sinkIcEE@Base 6.6.1
+ _ZTVNSt8__format19_Formatting_scannerINS_10_Sink_iterIcEEcEE@Base 6.6.1
+ _ZTVNSt8__format9_Seq_sinkINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEE@Base 6.6.1
+ _ZZNSt19_Sp_make_shared_tag5_S_tiEvE5__tag@Base 6.1.0
