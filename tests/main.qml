@@ -8,9 +8,9 @@ import QtQuick 2.1
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.1
 import org.kde.kirigami 2.15 as Kirigami
+import org.kde.taskmanager
 
 import org.kde.pipewire 0.1 as PipeWire
-import org.kde.pipewire.record 0.1 as PWRec
 
 Kirigami.ApplicationWindow
 {
@@ -20,10 +20,10 @@ Kirigami.ApplicationWindow
     visible: true
     property QtObject app
 
-    function addStream(nodeid, displayText, fd) {
+    function addStream(nodeid, displayText, fd, allowDmaBuf) {
         if (fd == null)
             fd = 0;
-        rep.model.append({nodeId: nodeid, uuid: "", display: displayText, fd: fd})
+        rep.model.append({nodeId: nodeid, uuid: "", display: displayText, fd: fd, allowDmaBuf: allowDmaBuf })
     }
     function removeStream(nodeid) {
         for(var i=0; i<rep.model.count; ++i) {
@@ -34,7 +34,18 @@ Kirigami.ApplicationWindow
         }
     }
 
-    signal record(int nodeId, bool capture)
+    Instantiator {
+        model: TasksModel {
+            groupMode: TasksModel.GroupDisabled
+        }
+        delegate: Item {
+            property var uuid: model.WinIdList
+            property var appId: model.AppId
+        }
+        onObjectAdded: (index, object) => {
+           app.addWindow(object.uuid, object.appId)
+        }
+    }
 
     ColumnLayout {
         id: pipes
@@ -45,35 +56,43 @@ Kirigami.ApplicationWindow
             onClicked: app.createVirtualMonitor()
         }
 
-        Repeater {
-            id: rep
-            model: ListModel {}
+        Button {
+            text: "Add Region"
+            onClicked: app.requestSelection()
+        }
 
-            delegate: Item {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+        ListView {
+            id: rep
+
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            clip: true
+            model: ListModel {}
+            delegate: RowLayout {
+                Kirigami.Icon {
+                    source: sourceItem.usingDmaBuf ? "speedometer" : "delete"
+                }
+
+                Button {
+                    text: sourceItem.visible ? "Pause" : "Resume"
+                    icon.name: sourceItem.visible ? "media-playback-pause" : "media-playback-start"
+                    onClicked: sourceItem.visible = !sourceItem.visible;
+                }
+
+                Label {
+                    text: model.display
+                }
+
                 PipeWire.PipeWireSourceItem {
                     id: sourceItem
+
+                    Layout.preferredWidth: Kirigami.Units.gridUnit * 16
+                    Layout.preferredHeight: Kirigami.Units.gridUnit * 8
+
                     nodeId: model.nodeId
                     fd: model.fd
-                    visible: record.state !== PWRec.PipeWireRecord.Recording
-                    anchors.fill: parent
-
-                }
-                Button {
-                    id: butt
-                    icon.name: "media-record"
-                    text: model.display + " " + model.nodeId
-                    enabled: checked === (record.state !== PWRec.PipeWireRecord.Idle)
-                    checkable: true
-
-                    PWRec.PipeWireRecord {
-                        id: record
-                        nodeId: model.nodeId
-                        fd: model.fd
-                        output: "~/clementine.mp4"
-                        active: butt.checked
-                    }
+                    allowDmaBuf: model.allowDmaBuf
                 }
             }
         }

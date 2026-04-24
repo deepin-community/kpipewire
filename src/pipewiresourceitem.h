@@ -22,6 +22,7 @@
 struct DmaBufAttributes;
 class PipeWireSourceStream;
 struct PipeWireFrame;
+class PipeWireFrameData;
 class QSGTexture;
 class QOpenGLTexture;
 typedef void *EGLImage;
@@ -50,6 +51,19 @@ class KPIPEWIRE_EXPORT PipeWireSourceItem : public QQuickItem
      * @note: This won't be updated until the first frame is recieved
      */
     Q_PROPERTY(QSize streamSize READ streamSize NOTIFY streamSizeChanged)
+
+    /**
+     * Allows disabling the dmabuf streams
+     */
+    Q_PROPERTY(bool allowDmaBuf READ allowDmaBuf WRITE setAllowDmaBuf)
+
+    Q_PROPERTY(bool usingDmaBuf READ usingDmaBuf NOTIFY usingDmaBufChanged)
+
+    /**
+     * Specifies whether the first frame has been received and there's something to display.
+     */
+    Q_PROPERTY(bool ready READ isReady NOTIFY readyChanged)
+
 public:
     enum class StreamState { Error, Unconnected, Connecting, Paused, Streaming };
     Q_ENUM(StreamState);
@@ -69,6 +83,12 @@ public:
 
     QSize streamSize() const;
 
+    bool usingDmaBuf() const;
+    bool allowDmaBuf() const;
+    void setAllowDmaBuf(bool allowed);
+
+    bool isReady() const;
+
     void componentComplete() override;
     void releaseResources() override;
 
@@ -77,15 +97,18 @@ public:
 Q_SIGNALS:
     void nodeIdChanged(uint nodeId);
     void fdChanged(uint fd);
-    void stateChanged();
     void streamSizeChanged();
+    void stateChanged();
+    void usingDmaBufChanged();
+    void readyChanged();
 
 private:
     void itemChange(ItemChange change, const ItemChangeData &data) override;
     void processFrame(const PipeWireFrame &frame);
     void updateTextureDmaBuf(const DmaBufAttributes &attribs, spa_video_format format);
-    void updateTextureImage(const QImage &image);
+    void updateTextureImage(const std::shared_ptr<PipeWireFrameData> &data);
     void refresh();
+    void setReady(bool ready);
 
     QScopedPointer<PipeWireSourceItemPrivate> d;
 };

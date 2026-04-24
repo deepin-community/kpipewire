@@ -39,14 +39,23 @@ public:
     };
     Q_ENUM(SourceTypes);
 
+    enum PersistMode {
+        NoPersist = 0,
+        PersistWhileRunning = 1,
+        PersistUntilRevoked = 2,
+    };
+    Q_ENUM(PersistMode)
+
     void setDuration(int duration);
+    void setPersistMode(PersistMode persistMode);
+    void setRestoreToken(const QString &restoreToken);
 
 public Q_SLOTS:
-    void response(uint code, const QVariantMap& results);
+    void response(uint code, const QVariantMap &results);
 
 private:
     void init(const QDBusObjectPath &path);
-    void handleStreams(const QVector<Stream> &streams);
+    void handleStreams(const QList<Stream> &streams);
     void start();
 
     OrgFreedesktopPortalScreenCastInterface *iface;
@@ -54,4 +63,6 @@ private:
     QTimer* const m_durationTimer;
     const QString m_handleToken;
     QQmlApplicationEngine* m_engine;
+    PersistMode m_persistMode = NoPersist;
+    QString m_restoreToken;
 };
