@@ -6,13 +6,14 @@
 
 #pragma once
 
+#include <QList>
 #include <QObject>
 #include <QSharedPointer>
-#include <QVector>
 #include <optional>
 
 #include <kpipewire_export.h>
 
+class QScreen;
 struct zkde_screencast_unstable_v1;
 
 namespace KWayland
@@ -20,8 +21,6 @@ namespace KWayland
 namespace Client
 {
 class PlasmaWindow;
-class Registry;
-class Output;
 }
 }
 
@@ -62,9 +61,8 @@ public:
     Q_ENUM(CursorMode);
 
     ScreencastingStream *createOutputStream(const QString &outputName, CursorMode mode);
-    ScreencastingStream *createOutputStream(KWayland::Client::Output *output, CursorMode mode);
+    ScreencastingStream *createOutputStream(QScreen *screen, CursorMode mode);
     ScreencastingStream *createRegionStream(const QRect &region, qreal scaling, CursorMode mode);
-    ScreencastingStream *createWindowStream(KWayland::Client::PlasmaWindow *window, CursorMode mode);
     ScreencastingStream *createWindowStream(const QString &uuid, CursorMode mode);
     ScreencastingStream *createVirtualMonitorStream(const QString &name, const QSize &size, qreal scale, CursorMode mode);
 

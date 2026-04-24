@@ -1,0 +1,9 @@
+# SymbolsHelper-Confirmed: 6.1.0 amd64
+libKPipeWireDmaBuf.so.6 libkpipewiredmabuf6 #MINVER#
+* Build-Depends-Package: libkpipewire-dev
+ _ZN13DmaBufHandler13downloadFrameER6QImageRK13PipeWireFrame@Base 6.1.0
+ _ZN13DmaBufHandler8setupEglEv@Base 6.1.0
+ _ZN13DmaBufHandlerC1Ev@Base 6.1.0
+ _ZN13DmaBufHandlerC2Ev@Base 6.1.0
+ _ZN13DmaBufHandlerD1Ev@Base 6.1.0
+ _ZN13DmaBufHandlerD2Ev@Base 6.1.0

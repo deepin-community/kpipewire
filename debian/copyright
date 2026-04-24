@@ -4,17 +4,42 @@ Source: https://invent.kde.org/plasma/kpipewire
 Upstream-Contact: plasma-devel@kde.org
 
 Files: *
-Copyright: 2020-2022, Aleix Pol Gonzalez <aleixpol@kde.org>
+Copyright: 2020-2023, Aleix Pol Gonzalez <aleixpol@kde.org>
+           2023 Arjen Hiemstra <ahiemstra@heimr.nl>
+           Jan Grulich <jgrulich@redhat.com>
+           2023 Marco Martin <mart@kde.org>
+           2023 Noah Davis <noahadvs@gmail.com>
            2018-2020, Red Hat Inc
 License: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 
+Files: src/monitors/autotests/alarm-clock-elapsed.oga
+       src/monitors/autotests/mediamonitortest.cpp
+       src/monitors/autotests/mediamonitortest.qml
+       src/monitors/mediamonitor.cpp
+       src/monitors/mediamonitor.h
+Copyright: 2023 Fushan Wen <qydwhotmail@gmail.com>
+           2023 Collabora Ltd.
+License: GPL-2.0-or-later
+
 Files: cmake/FindLibdrm.cmake
+       src/monitors/CMakeLists.txt
+       src/monitors/autotests/CMakeLists.txt
 Copyright: 2014, Alex Merry <alex.merry@kde.org>
+           2023 Fushan Wen <qydwhotmail@gmail.com>
            2014, Martin Gräßlin <mgraesslin@kde.org>
 License: BSD-3-clause
 
+Files: src/dmabufhandler.cpp
+Copyright: 2022 Aleix Pol i Gonzalez <aleixpol@kde.org>
+License: Apache-2.0
+
+Files: .gitlab-ci.yml
+       .kde-ci.yml
+Copyright: None
+License: CC0-1.0
+
 Files: debian/*
-Copyright: 2022, Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
+Copyright: 2022-2024, Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
            2022, Jonathan Esk-Riddell <jr@jriddell.org>
            2022, Rik Mills <rikmills@kde.org>
 License: GPL-2.0-or-later
@@ -121,3 +146,38 @@ License: LicenseRef-KDE-Accepted-LGPL
  WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  General Public License for more details.
+
+License: CC0-1.0
+ CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE LEGAL
+ SERVICES. DISTRIBUTION OF THIS DOCUMENT DOES NOT CREATE AN ATTORNEY-CLIENT
+ RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS INFORMATION ON AN "AS-IS" BASIS.
+ CREATIVE COMMONS MAKES NO WARRANTIES REGARDING THE USE OF THIS DOCUMENT OR
+ THE INFORMATION OR WORKS PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR
+ DAMAGES RESULTING FROM THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS
+ PROVIDED HEREUNDER.
+ .
+ Statement of Purpose
+ .
+ The laws of most jurisdictions throughout the world automatically confer
+ exclusive Copyright and Related Rights (defined below) upon the creator and
+ subsequent owner(s) (each and all, an "owner") of an original work of
+ authorship and/or a database (each, a "Work").
+ .
+ On Debian systems, the complete text of the Creative Commons Zero v1.0 Universal
+ license can be found in "/usr/share/common-licenses/CC0-1.0".
+
+License: Apache-2.0
+  Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ .
+     http://www.apache.org/licenses/LICENSE-2.0
+ .
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ .
+ On Debian systems, the complete text of the Apache License 2.0 can
+ be found in "/usr/share/common-licenses/Apache-2.0"
